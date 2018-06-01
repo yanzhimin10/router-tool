@@ -1,5 +1,5 @@
 <template>
 	<div>
-		Login
+		Status
 	</div>
 </template>
