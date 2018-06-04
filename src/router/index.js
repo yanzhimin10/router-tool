@@ -8,6 +8,7 @@ const StatusMain = () => import('@/components/status/StatusMain')
 const StatusAll = () => import('@/components/status/StatusAll')
 const SettingMain = () => import('@/components/setting/SettingMain')
 const SettingAll = () => import('@/components/setting/SettingAll')
+const Test = () => import("@/test")
 
 Vue.use(Router)
 
@@ -19,24 +20,23 @@ export default new Router({
       component: Login
     },
     {
+      path: "/test",
+      component: Test,
+    },
+    {
       path: '/login',
       name: 'login',
       component: Login
     },
     {
-    	path: '/info',
+      path: '/info',
       name: 'info',
-	    component: Main,
+      component: Main,
       children: [
         {
           path: 'status',
           component: StatusMain,
           children: [
-            {
-              path: '/',
-              name: 'status-root',
-              component: StatusAll,
-            },
             {
               path: "all",
               name: "status-all",
@@ -45,20 +45,15 @@ export default new Router({
           ]
         },
         {
-        	path: "setting",
-        	component: SettingMain,
-        	children: [
-        		{
-        			path: "",
-        			name: "setting-root",
-        			component: SettingAll,
-        		},
-        		{
-        			path: "all",
-        			name: "setting-all",
-        			component: SettingAll,
-        		},
-        	],
+          path: "setting",
+          component: SettingMain,
+          children: [
+            {
+              path: "all",
+              name: "setting-all",
+              component: SettingAll,
+            },
+          ],
         },
       ],
     },

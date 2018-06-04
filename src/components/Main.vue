@@ -29,8 +29,6 @@
         headerHeight: '60px'
       }
     },
-    computed: {
-    },
     created() {
       let vue = this;
 
