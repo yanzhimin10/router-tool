@@ -3,7 +3,7 @@
 		<el-row >
 			<el-col :span="24">
 				<div class="login_head grid-content bg-purple-dark">
-					<span >WELI AD TOOLS</span>
+					<span >ROUTER TOOLS</span>
 				</div>
 			</el-col>
 		</el-row>
@@ -17,37 +17,29 @@
 
 		<!-- 表单部分 -->
 
-		<!-- <el-form ref="form" :model="form" label-width="80px" style="width: 80%;margin:auto;">
-			<el-form-item label="Email" style="margin-left: 27%">
-				<el-input v-model="form.Email" style="width: 53%;"></el-input>
-			</el-form-item>
-			<el-form-item label="Password" style="margin-left: 27%">
-				<el-input v-model="form.Password" style="width: 53%"></el-input>
-			</el-form-item>
-			
-			<el-form-item style="margin-left: 35%">
-				<el-button type="primary" style="background-color: white;font-size: 14px;
-				color: #606266;">Register</el-button>
-				<el-button @click="onSubmit" style="background-color: rgba(63,158,255);color: white">Login</el-button>
-			</el-form-item>
-		</el-form> -->
-
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm"style="width: 80%;margin:auto;"> 
-			<el-form-item label="Email" prop="Email" style="margin-left: 27%">
-				<el-input v-model="ruleForm.Email" style="width: 53%;"></el-input>
+			<el-form-item label="Username" prop="Username" style="margin-left: 27%">
+				<el-input v-model="ruleForm.Username" style="width: 53%;"></el-input>
 			</el-form-item>
 
 			<el-form-item label="Password" prop="Password" style="margin-left: 27%">
-				<el-input v-model="ruleForm.Password" style="width: 53%;"></el-input>
+				<el-input v-model="ruleForm.Password" type="password" style="width: 53%;"></el-input>
 			</el-form-item>
 
-			<el-form-item style="margin-left: 35%">
-				<el-button type="primary" class="login_registerButton">Register</el-button>
-				<el-button @click="submitForm('ruleForm','info')" class="login_loginButton">Login</el-button>
+			<el-form-item style="margin-left: 40%">
+				<el-button @click="submitForm('ruleForm','info')" type="primary">Login</el-button>
 			</el-form-item>
+
 		</el-form>
 
-
+		<div style="margin: auto;text-align: center;color: red">
+			<span v-show="warnMsg_userLose">用户名不存在</span>
+			<span v-show="warnMsg_pwdWrong">密码错误</span>
+			<span v-show="warnMsg_netError">网络异常</span>
+			<span v-show="warnMsg_dataBaseError">数据库异常</span>
+		</div>
+		
+		
 	</div>
 </template>
 
@@ -58,13 +50,18 @@
 				activeIndex: '1',
 				activeIndex2: '1',
 
+				warnMsg_userLose: false,
+				warnMsg_pwdWrong: false,
+				warnMsg_netError: false,
+				warnMsg_dataBaseError: false,
+
 				ruleForm: {
-					Email: '',
+					Username: '',
 					Password: ''
 					
 				},
 				rules: {
-					Email: [
+					Username: [
 					{ required: true, message: '请输入邮箱'}
 						// { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
 						],
@@ -81,14 +78,7 @@
 					console.log(key, keyPath);
 				},
 				submitForm(formName,key) {
-					// this.$refs[formName].validate((valid) => {
-					// 	if (valid) {
-					// 		alert('submit!');
-					// 	} else {
-					// 		console.log('error submit!!');
-					// 		return false;
-					// 	}
-					// });
+					
 					let pathMap = {
 						info:'info',
 					}
@@ -96,25 +86,30 @@
 					if (dest) {
 
 						const _this = this;
-						this.$net.login(this.ruleForm.Email,this.ruleForm.Password,function(dataStatus) {
-							if(dataStatus == 0) {
-								alert('登录成功');
-								_this.$router.push({name:dest});
-							} else if(dataStatus == -1) {
-								alert('用户名不存在');
-								return false;
-							} else if(dataStatus == -2) {
-								alert('密码错误');
-								return false;
-							} else if(dataStatus == -100) {
-								alert('网络异常');
-								return false;
-							} else if(dataStatus == -101) {
-								alert('数据库异常');
-								return false;
-							}
-						});
-						// this.$router.push({name:dest});
+						if (this.ruleForm.Username && this.ruleForm.Password) {
+							this.$activity.show();
+							this.$net.login(this.ruleForm.Username,this.ruleForm.Password,function(dataStatus) {
+								_this.$activity.hide();
+
+								_this.warnMsg_userLose=false;
+								_this.warnMsg_pwdWrong=false;
+								_this.warnMsg_netError=false;
+								_this.warnMsg_dataBaseError=false;
+
+								if(dataStatus == 0) {
+									_this.$router.push({name:dest});
+								} else if(dataStatus == -1) {
+									_this.warnMsg_userLose=true;
+								} else if(dataStatus == -2) {
+									_this.warnMsg_pwdWrong=true;
+								} else if(dataStatus == -100) {
+									_this.warnMsg_netError=true;
+								} else if(dataStatus == -101) {
+									_this.warnMsg_dataBaseError=true;
+								}
+							});
+						} 
+
 					};
 				}
 			}
