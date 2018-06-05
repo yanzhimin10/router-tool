@@ -4,6 +4,8 @@
 		<el-date-picker
 		  v-model="value5"
 		  type="datetimerange"
+		  format="yyyy-MM-dd"
+		  value-format="yyyy-MM-dd"
 		  :picker-options="pickerOptions2"
 		  range-separator="to"
 		  start-placeholder="start date"
@@ -12,7 +14,7 @@
 		<br>
 		<br>
 		<el-table
-		  :method="tableData"
+		  :data="tableData"
 		  stripe
 		  max-height=400
 		  style="width: 100%">
@@ -27,12 +29,12 @@
 	        width="180">
 	      </el-table-column>
 	      <el-table-column
-	        prop="time_4g"
+	        prop="to_4g_count"
 	        label="切换4g次数"
 	        width="180">
 	      </el-table-column>
 	      <el-table-column
-	        prop="time_fiber"
+	        prop="to_eth_count"
 	        label="切换光纤次数"
 	        width="180">
 	      </el-table-column>
@@ -49,13 +51,7 @@
 	export default{
 		data() {
 			return {
-				tableData: [/*{
-					name: 'jjc',
-					version: 'jjcc',
-					time_4g: 'jjccc',
-					time_fiber: 'jjcccc',
-					flow_4g: 'jjccccc',
-				}*/], 
+				tableData: [], 
 				pickerOptions2: {
 					shortcuts: [{
 						text: '最近7天',
@@ -87,12 +83,23 @@
 			};
 		},
 		created: function () {
-			//获取数据，动态添加表
-			//this.tableData = data
+			//获取数据，动态添加表,---初始
+			const end = new Date();
+			const start = new Date();
+			start.setTime(start.getTime() - 3600 * 1000 * 24 *7);
+			this.value5 = [start, end];
+            const self = this;
+			this.$net.getRouterStatus(this.value5, function(getstatus,getdata) {
+				self.tableData = getdata
+			});
 		},
 		updated: function () {
 			//获取改变的时间段去查询数据
-			console.log(this.value5)
+            const self = this
+			this.$net.getRouterStatus(this.value5, function(getstatus,getdata) {
+				self.tableData = getdata
+				//console.log('tableData is '+ self.tableData)
+			});
 		}
 	};
 </script>
