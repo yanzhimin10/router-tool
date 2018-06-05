@@ -73,7 +73,7 @@ let net = {
         xmlhttp.send(postUrl);
     },
 
-    //startDate, endDate
+    //info: {startDate, endDate}
     getRouterStatus(info, callback) {
         let xmlhttp = new XMLHttpRequest();
 
@@ -88,10 +88,12 @@ let net = {
                 }
             }
         };
+        let startDate = new Date(info.startDate).getTime();
+        let endDate = new Date(info.endDate).getTime();
 
         let url = server_url + "getRouterStatus";
-        url = net.urlParam(url, "startDate", info.startDate);
-        url = net.urlParam(url, "endDate", info.endDate);
+        url = net.urlParam(url, "startDate", startDate);
+        url = net.urlParam(url, "endDate", endDate);
 
         xmlhttp.open("GET", url, true);
         xmlhttp.send(null);

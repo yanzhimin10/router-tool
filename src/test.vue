@@ -20,10 +20,9 @@
 		methods: {
 			refresh() {
 				// this.updateRouterStatus();
-				// this.getRouterStatus();
+				this.getRouterStatus();
 				// this.updateRouterSetting();
-				this.getRouterSetting();
-
+				// this.getRouterSetting();
 			},
 			login() {
 				this.$net.login("root", 123, function(status) {
@@ -49,8 +48,8 @@
 			getRouterStatus() {
 				const _this = this;
 				let info = {
-					startDate: new Date().getTime() - (1000 * 3600 * 24),
-					endDate: new Date().getTime(),
+					startDate: "2018=06-03",
+					endDate: "2018-06-04",
 				}
 				_this.$activity.show();
 				_this.$net.getRouterStatus(info, function(status, dataList) {
