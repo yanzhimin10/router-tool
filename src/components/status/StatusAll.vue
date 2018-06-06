@@ -83,7 +83,7 @@
 			};
 		},
 		created: function () {
-			//获取数据，动态添加表,---初始
+			//获取数据，动态添加表,---初始时间为最近七天
 			const end = new Date();
 			const start = new Date();
 			start.setTime(start.getTime() - 3600 * 1000 * 24 *7);
